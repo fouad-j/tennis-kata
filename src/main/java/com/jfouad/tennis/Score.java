@@ -1,5 +1,15 @@
 package com.jfouad.tennis;
 
-enum Score {
-    ZERO, FIFTEEN, THIRTY, FORTY, ADVANTAGE, WIN
+public enum Score {
+    ZERO("LOVE"), FIFTEEN("15"), THIRTY("30"), FORTY("40");
+
+    private String scoreValue;
+
+    Score(String scoreValue) {
+        this.scoreValue = scoreValue;
+    }
+
+    public static String getScoreLabel(int scoreValue) {
+        return Score.values()[scoreValue].scoreValue;
+    }
 }

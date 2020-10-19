@@ -1,6 +1,6 @@
 package com.jfouad.tennis;
 
-import static com.jfouad.tennis.Score.ZERO;
+import static com.jfouad.tennis.Score.getScoreLabel;
 
 public class TennisGame {
 
@@ -12,7 +12,19 @@ public class TennisGame {
         this.playerTwo = new Player(namePlayerTwo, 0);
     }
 
-    public GameStatus getScore() {
+    public String getScore() {
+        if (playerOne.getScore() == 0 && playerTwo.getScore() == 0) {
+            return getScoreLabel(0) + " - " + getScoreLabel(0);
+        }
+
+        if (playerOne.getScore() >= 3 && playerOne.getScore() == playerTwo.getScore()) {
+            return "Deuce";
+        }
+
+        if (playerOne.getScore() == playerTwo.getScore()) {
+            return getScoreLabel(playerOne.getScore()) + " - " + getScoreLabel(playerTwo.getScore());
+        }
+
         return null;
     }
 
@@ -23,7 +35,6 @@ public class TennisGame {
     public void playerTwoScores() {
         this.playerTwo.scores();
     }
-
 
 }
 
