@@ -9,21 +9,20 @@ import static com.jfouad.tennis.Score.getScoreLabel;
 
 public class TennisGame {
     private final BiPredicate<Player, Player> isDeuceScore = (playerOne, playerTwo) -> playerOne.getScore() >= 3 && playerOne.getScore() == playerTwo.getScore();
-    private final BiPredicate<Player, Player> isEqualScore = (playerOne, playerTwo) -> playerOne.getScore() == playerTwo.getScore();
     private final BiPredicate<Player, Player> isPlayerWins = (playerOne, playerTwo) ->
             (playerOne.getScore() > 3 && playerOne.getScore() >= playerTwo.getScore() + 2) ||
             (playerTwo.getScore() > 3 && playerTwo.getScore() >= playerOne.getScore() + 2);
     private final BiPredicate<Player, Player> isPlayerHasAdvantage = (playerOne, playerTwo) ->
             (playerOne.getScore() > 3 && playerOne.getScore() == playerTwo.getScore() + 1) ||
             (playerTwo.getScore() > 3 && playerTwo.getScore() == playerOne.getScore() + 1);
+    private final BiPredicate<Player, Player> isGameInProgress = (playerOne, playerTwo) -> playerOne.getScore() <= 3 && playerTwo.getScore() <= 3;
 
-    private final Map<BiPredicate<Player, Player>, BiFunction<Player, Player, String>> rules =
-            new LinkedHashMap<BiPredicate<Player, Player>, BiFunction<Player, Player, String>>() {{
-                put(isDeuceScore, (playerOne, playerTwo) -> "Deuce");
-                put(isEqualScore, (playerOne, playerTwo) -> getScoreLabel(playerOne.getScore()) + " - " + getScoreLabel(playerTwo.getScore()));
-                put(isPlayerHasAdvantage, (playerOne, playerTwo) -> "Advantage " + getLeadGameName(playerOne, playerTwo));
-                put(isPlayerWins, (playerOne, playerTwo) -> getLeadGameName(playerOne, playerTwo) + " wins");
-            }};
+    private final Map<BiPredicate<Player, Player>, BiFunction<Player, Player, String>> rules = new LinkedHashMap<>() {{
+        put(isDeuceScore, (playerOne, playerTwo) -> "Deuce");
+        put(isPlayerHasAdvantage, (playerOne, playerTwo) -> "Advantage " + getLeadGameName(playerOne, playerTwo));
+        put(isPlayerWins, (playerOne, playerTwo) -> getLeadGameName(playerOne, playerTwo) + " wins");
+        put(isGameInProgress, (playerOne, playerTwo) -> getScoreLabel(playerOne.getScore()) + " - " + getScoreLabel(playerTwo.getScore()));
+    }};
 
     private Player playerOne;
     private Player playerTwo;
@@ -34,12 +33,13 @@ public class TennisGame {
     }
 
     public String getScore() {
-        return rules.entrySet().stream()
-                .filter(e -> e.getKey().test(playerOne, playerTwo))
+        return rules.entrySet()
+                .stream()
+                .filter(rule -> rule.getKey().test(playerOne, playerTwo))
                 .map(Map.Entry::getValue)
                 .findFirst()
-                .map(e -> e.apply(playerOne, playerTwo))
-                .orElseThrow(() -> new RuntimeException("Unknown scenario")); // TODO create custom Exception
+                .map(renderAppliedRule -> renderAppliedRule.apply(playerOne, playerTwo))
+                .orElseThrow(() -> new TennisRulesException("Unknown tennis rule"));
     }
 
     public void playerOneScores() {
