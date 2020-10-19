@@ -1,7 +1,6 @@
 package com.jfouad.tennis;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -37,29 +36,20 @@ class PlayerTest {
         assertThat(resultScore).isEqualTo(expectedScore);
     }
 
-    @Test
-    void should_test_advantage_scenario() {
+    @ParameterizedTest
+    @CsvSource({
+            "5, 4, Advantage Player A",
+            "4, 5, Advantage Player B",
+    })
+    void should_test_advantage_scenario(int nbrPointPlayer1, int nbrPointPlayer2, String expectedScore) {
         // GIVEN
-        IntStream.rangeClosed(1, 5).forEach(a -> tennisGame.playerOneScores());
-        IntStream.rangeClosed(1, 4).forEach(a -> tennisGame.playerTwoScores());
+        IntStream.rangeClosed(1, nbrPointPlayer1).forEach(a -> tennisGame.playerOneScores());
+        IntStream.rangeClosed(1, nbrPointPlayer2).forEach(a -> tennisGame.playerTwoScores());
 
         // WHEN
         String resultScore = tennisGame.getScore();
 
         // THEN
-        assertThat(resultScore).isEqualTo("Advantage Player A");
-    }
-
-    @Test
-    void should_test_advantage_scenarioo() {
-        // GIVEN
-        IntStream.rangeClosed(1, 4).forEach(a -> tennisGame.playerOneScores());
-        IntStream.rangeClosed(1, 5).forEach(a -> tennisGame.playerTwoScores());
-
-        // WHEN
-        String resultScore = tennisGame.getScore();
-
-        // THEN
-        assertThat(resultScore).isEqualTo("Advantage Player B");
+        assertThat(resultScore).isEqualTo(expectedScore);
     }
 }
