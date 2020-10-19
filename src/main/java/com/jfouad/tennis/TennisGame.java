@@ -18,6 +18,7 @@ public class TennisGame {
     private final BiPredicate<Player, Player> isDeuceScore = (playerOne, playerTwo) -> playerOne.getScore() >= 3 && playerOne.getScore() == playerTwo.getScore();
     private final BiPredicate<Player, Player> isLoveScore = (playerOne, playerTwo) -> playerOne.getScore() == 0 && playerTwo.getScore() == 0;
     private final BiPredicate<Player, Player> isEqualScore = (playerOne, playerTwo) -> playerOne.getScore() == playerTwo.getScore();
+    private final BiPredicate<Player, Player> isPlayerWins = (playerOne, playerTwo) -> playerOne.getScore() > 3 && playerOne.getScore() >= playerTwo.getScore() + 2;
 
     public String getScore() {
         if (isLoveScore.test(playerOne, playerTwo)) {
@@ -32,12 +33,20 @@ public class TennisGame {
             return getScoreLabel(playerOne.getScore()) + " - " + getScoreLabel(playerTwo.getScore());
         }
 
-        if(isPlayerHasAdvantage.test(playerOne, playerTwo)) {
+        if (isPlayerHasAdvantage.test(playerOne, playerTwo)) {
             return "Advantage " + playerOne.getName();
         }
 
-        if(isPlayerHasAdvantage.test(playerTwo, playerOne)) {
+        if (isPlayerHasAdvantage.test(playerTwo, playerOne)) {
             return "Advantage " + playerTwo.getName();
+        }
+
+        if (isPlayerWins.test(playerOne, playerTwo)) {
+            return playerOne.getName() + " wins";
+        }
+
+        if (isPlayerWins.test(playerTwo, playerOne)) {
+            return playerTwo.getName() + " wins";
         }
 
         return null;

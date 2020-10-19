@@ -1,6 +1,7 @@
 package com.jfouad.tennis;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -51,5 +52,31 @@ class PlayerTest {
 
         // THEN
         assertThat(resultScore).isEqualTo(expectedScore);
+    }
+
+    @Test
+    void should_test_win_game_scenario() {
+        // GIVEN
+        IntStream.rangeClosed(1, 4).forEach(a -> tennisGame.playerOneScores());
+        IntStream.rangeClosed(1, 2).forEach(a -> tennisGame.playerTwoScores());
+
+        // WHEN
+        String resultScore = tennisGame.getScore();
+
+        // THEN
+        assertThat(resultScore).isEqualTo("Player A wins");
+    }
+
+    @Test
+    void should_test_win_game_scenarioo() {
+        // GIVEN
+        IntStream.rangeClosed(1, 2).forEach(a -> tennisGame.playerOneScores());
+        IntStream.rangeClosed(1, 4).forEach(a -> tennisGame.playerTwoScores());
+
+        // WHEN
+        String resultScore = tennisGame.getScore();
+
+        // THEN
+        assertThat(resultScore).isEqualTo("Player B wins");
     }
 }
