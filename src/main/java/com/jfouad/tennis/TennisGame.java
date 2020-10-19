@@ -1,5 +1,7 @@
 package com.jfouad.tennis;
 
+import java.util.function.BiPredicate;
+
 import static com.jfouad.tennis.Score.getScoreLabel;
 
 public class TennisGame {
@@ -12,24 +14,29 @@ public class TennisGame {
         this.playerTwo = new Player(namePlayerTwo, 0);
     }
 
+    private final BiPredicate<Player, Player> isPlayerHasAdvantage = (playerOne, playerTwo) -> playerOne.getScore() > 3 && playerOne.getScore() == playerTwo.getScore() + 1;
+    private final BiPredicate<Player, Player> isDeuceScore = (playerOne, playerTwo) -> playerOne.getScore() >= 3 && playerOne.getScore() == playerTwo.getScore();
+    private final BiPredicate<Player, Player> isLoveScore = (playerOne, playerTwo) -> playerOne.getScore() == 0 && playerTwo.getScore() == 0;
+    private final BiPredicate<Player, Player> isEqualScore = (playerOne, playerTwo) -> playerOne.getScore() == playerTwo.getScore();
+
     public String getScore() {
-        if (playerOne.getScore() == 0 && playerTwo.getScore() == 0) {
+        if (isLoveScore.test(playerOne, playerTwo)) {
             return getScoreLabel(0) + " - " + getScoreLabel(0);
         }
 
-        if (playerOne.getScore() >= 3 && playerOne.getScore() == playerTwo.getScore()) {
+        if (isDeuceScore.test(playerOne, playerTwo)) {
             return "Deuce";
         }
 
-        if (playerOne.getScore() == playerTwo.getScore()) {
+        if (isEqualScore.test(playerOne, playerTwo)) {
             return getScoreLabel(playerOne.getScore()) + " - " + getScoreLabel(playerTwo.getScore());
         }
 
-        if(playerOne.getScore() > 3 && playerOne.getScore() == playerTwo.getScore() + 1) {
+        if(isPlayerHasAdvantage.test(playerOne, playerTwo)) {
             return "Advantage " + playerOne.getName();
         }
 
-        if(playerTwo.getScore() > 3 && playerTwo.getScore() == playerOne.getScore() + 1) {
+        if(isPlayerHasAdvantage.test(playerTwo, playerOne)) {
             return "Advantage " + playerTwo.getName();
         }
 
