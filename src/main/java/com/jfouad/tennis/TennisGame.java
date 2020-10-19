@@ -25,6 +25,14 @@ public class TennisGame {
             return getScoreLabel(playerOne.getScore()) + " - " + getScoreLabel(playerTwo.getScore());
         }
 
+        if(playerOne.getScore() > 3 && playerOne.getScore() == playerTwo.getScore() + 1) {
+            return "Advantage " + playerOne.getName();
+        }
+
+        if(playerTwo.getScore() > 3 && playerTwo.getScore() == playerOne.getScore() + 1) {
+            return "Advantage " + playerTwo.getName();
+        }
+
         return null;
     }
 

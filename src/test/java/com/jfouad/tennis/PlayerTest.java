@@ -38,7 +38,28 @@ class PlayerTest {
     }
 
     @Test
-    void name() {
+    void should_test_advantage_scenario() {
+        // GIVEN
+        IntStream.rangeClosed(1, 5).forEach(a -> tennisGame.playerOneScores());
+        IntStream.rangeClosed(1, 4).forEach(a -> tennisGame.playerTwoScores());
 
+        // WHEN
+        String resultScore = tennisGame.getScore();
+
+        // THEN
+        assertThat(resultScore).isEqualTo("Advantage Player A");
+    }
+
+    @Test
+    void should_test_advantage_scenarioo() {
+        // GIVEN
+        IntStream.rangeClosed(1, 4).forEach(a -> tennisGame.playerOneScores());
+        IntStream.rangeClosed(1, 5).forEach(a -> tennisGame.playerTwoScores());
+
+        // WHEN
+        String resultScore = tennisGame.getScore();
+
+        // THEN
+        assertThat(resultScore).isEqualTo("Advantage Player B");
     }
 }
