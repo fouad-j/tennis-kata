@@ -2,6 +2,10 @@ package com.jfouad.tennis;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,35 +18,27 @@ class PlayerTest {
         tennisGame = new TennisGame("Player A", "Player B");
     }
 
-    @Test
-    void should_return_love_for_player_one_and_two_as_initial_value() {
-        assertThat(tennisGame.getScore()).isEqualTo("LOVE - LOVE");
+    @ParameterizedTest
+    @CsvSource({
+            "0, 0, LOVE - LOVE",
+            "1, 1, 15 - 15",
+            "2, 2, 30 - 30",
+            "3, 3, Deuce",
+    })
+    void should_test_equal_score(int nbrPointPlayer1, int nbrPointPlayer2, String expectedScore) {
+        // GIVEN
+        IntStream.rangeClosed(1, nbrPointPlayer1).forEach(a -> tennisGame.playerOneScores());
+        IntStream.rangeClosed(1, nbrPointPlayer2).forEach(a -> tennisGame.playerTwoScores());
+
+        // WHEN
+        String resultScore = tennisGame.getScore();
+
+        // THEN
+        assertThat(resultScore).isEqualTo(expectedScore);
     }
 
     @Test
-    void should_return_30_when_each_player_has_1_point() {
-        tennisGame.playerOneScores();
-        tennisGame.playerTwoScores();
-        assertThat(tennisGame.getScore()).isEqualTo("15 - 15");
-    }
+    void name() {
 
-    @Test
-    void should_return_30_when_each_player_has_2_points() {
-        tennisGame.playerOneScores();
-        tennisGame.playerOneScores();
-        tennisGame.playerTwoScores();
-        tennisGame.playerTwoScores();
-        assertThat(tennisGame.getScore()).isEqualTo("30 - 30");
-    }
-
-    @Test
-    void should_return_deuce_when_score_is_40_for_both() {
-        tennisGame.playerOneScores();
-        tennisGame.playerOneScores();
-        tennisGame.playerOneScores();
-        tennisGame.playerTwoScores();
-        tennisGame.playerTwoScores();
-        tennisGame.playerTwoScores();
-        assertThat(tennisGame.getScore()).isEqualTo("Deuce");
     }
 }
