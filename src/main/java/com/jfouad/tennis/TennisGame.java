@@ -14,11 +14,18 @@ public class TennisGame {
         this.playerTwo = new Player(namePlayerTwo, 0);
     }
 
-    private final BiPredicate<Player, Player> isPlayerHasAdvantage = (playerOne, playerTwo) -> playerOne.getScore() > 3 && playerOne.getScore() == playerTwo.getScore() + 1;
+    private final BiPredicate<Player, Player> isPlayerHasAdvantage = (playerOne, playerTwo) ->
+            (playerOne.getScore() > 3 && playerOne.getScore() == playerTwo.getScore() + 1) ||
+                    (playerTwo.getScore() > 3 && playerTwo.getScore() == playerOne.getScore() + 1);
+
     private final BiPredicate<Player, Player> isDeuceScore = (playerOne, playerTwo) -> playerOne.getScore() >= 3 && playerOne.getScore() == playerTwo.getScore();
     private final BiPredicate<Player, Player> isLoveScore = (playerOne, playerTwo) -> playerOne.getScore() == 0 && playerTwo.getScore() == 0;
     private final BiPredicate<Player, Player> isEqualScore = (playerOne, playerTwo) -> playerOne.getScore() == playerTwo.getScore();
-    private final BiPredicate<Player, Player> isPlayerWins = (playerOne, playerTwo) -> playerOne.getScore() > 3 && playerOne.getScore() >= playerTwo.getScore() + 2;
+    private final BiPredicate<Player, Player> isPlayerWins = (playerOne, playerTwo) ->
+            (playerOne.getScore() > 3 && playerOne.getScore() >= playerTwo.getScore() + 2) ||
+                    (playerTwo.getScore() > 3 && playerTwo.getScore() >= playerOne.getScore() + 2);
+
+    private final BiPredicate<Player, Player> isFirstPlayerLead = (playerOne, playerTwo) -> playerOne.getScore() > playerTwo.getScore();
 
     public String getScore() {
         if (isLoveScore.test(playerOne, playerTwo)) {
@@ -34,22 +41,14 @@ public class TennisGame {
         }
 
         if (isPlayerHasAdvantage.test(playerOne, playerTwo)) {
-            return "Advantage " + playerOne.getName();
-        }
-
-        if (isPlayerHasAdvantage.test(playerTwo, playerOne)) {
-            return "Advantage " + playerTwo.getName();
+            return "Advantage " + getLeadGameName(playerOne, playerTwo);
         }
 
         if (isPlayerWins.test(playerOne, playerTwo)) {
-            return playerOne.getName() + " wins";
+            return getLeadGameName(playerOne, playerTwo) + " wins";
         }
 
-        if (isPlayerWins.test(playerTwo, playerOne)) {
-            return playerTwo.getName() + " wins";
-        }
-
-        return null;
+        throw new RuntimeException("Unknown scenario");
     }
 
     public void playerOneScores() {
@@ -58,6 +57,12 @@ public class TennisGame {
 
     public void playerTwoScores() {
         this.playerTwo.scores();
+    }
+
+    private String getLeadGameName(Player playerOne, Player playerTwo) {
+        return isFirstPlayerLead.test(playerOne, playerTwo)
+                ? playerOne.getName()
+                : playerTwo.getName();
     }
 
 }

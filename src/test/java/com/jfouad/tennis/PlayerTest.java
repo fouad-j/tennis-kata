@@ -1,7 +1,6 @@
 package com.jfouad.tennis;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -25,10 +24,10 @@ class PlayerTest {
             "2, 2, 30 - 30",
             "3, 3, Deuce",
     })
-    void should_test_equal_score(int nbrPointPlayer1, int nbrPointPlayer2, String expectedScore) {
+    void should_test_equal_score(int nbrPointsPlayer1, int nbrPointsPlayer2, String expectedScore) {
         // GIVEN
-        IntStream.rangeClosed(1, nbrPointPlayer1).forEach(a -> tennisGame.playerOneScores());
-        IntStream.rangeClosed(1, nbrPointPlayer2).forEach(a -> tennisGame.playerTwoScores());
+        IntStream.rangeClosed(1, nbrPointsPlayer1).forEach(a -> tennisGame.playerOneScores());
+        IntStream.rangeClosed(1, nbrPointsPlayer2).forEach(a -> tennisGame.playerTwoScores());
 
         // WHEN
         String resultScore = tennisGame.getScore();
@@ -42,10 +41,10 @@ class PlayerTest {
             "5, 4, Advantage Player A",
             "4, 5, Advantage Player B",
     })
-    void should_test_advantage_scenario(int nbrPointPlayer1, int nbrPointPlayer2, String expectedScore) {
+    void should_test_advantage_scenario(int nbrPointsPlayer1, int nbrPointsPlayer2, String expectedScore) {
         // GIVEN
-        IntStream.rangeClosed(1, nbrPointPlayer1).forEach(a -> tennisGame.playerOneScores());
-        IntStream.rangeClosed(1, nbrPointPlayer2).forEach(a -> tennisGame.playerTwoScores());
+        IntStream.rangeClosed(1, nbrPointsPlayer1).forEach(a -> tennisGame.playerOneScores());
+        IntStream.rangeClosed(1, nbrPointsPlayer2).forEach(a -> tennisGame.playerTwoScores());
 
         // WHEN
         String resultScore = tennisGame.getScore();
@@ -54,29 +53,23 @@ class PlayerTest {
         assertThat(resultScore).isEqualTo(expectedScore);
     }
 
-    @Test
-    void should_test_win_game_scenario() {
+    @ParameterizedTest
+    @CsvSource({
+            "4, 2, Player A wins",
+            "1, 4, Player B wins",
+            "4, 6, Player B wins",
+            "4, 10, Player B wins",
+    })
+    void should_test_win_game_scenario(int nbrPointsPlayer1, int nbrPointsPlayer2, String expectedScore) {
         // GIVEN
-        IntStream.rangeClosed(1, 4).forEach(a -> tennisGame.playerOneScores());
-        IntStream.rangeClosed(1, 2).forEach(a -> tennisGame.playerTwoScores());
+        IntStream.rangeClosed(1, nbrPointsPlayer1).forEach(a -> tennisGame.playerOneScores());
+        IntStream.rangeClosed(1, nbrPointsPlayer2).forEach(a -> tennisGame.playerTwoScores());
 
         // WHEN
         String resultScore = tennisGame.getScore();
 
         // THEN
-        assertThat(resultScore).isEqualTo("Player A wins");
+        assertThat(resultScore).isEqualTo(expectedScore);
     }
 
-    @Test
-    void should_test_win_game_scenarioo() {
-        // GIVEN
-        IntStream.rangeClosed(1, 2).forEach(a -> tennisGame.playerOneScores());
-        IntStream.rangeClosed(1, 4).forEach(a -> tennisGame.playerTwoScores());
-
-        // WHEN
-        String resultScore = tennisGame.getScore();
-
-        // THEN
-        assertThat(resultScore).isEqualTo("Player B wins");
-    }
 }
