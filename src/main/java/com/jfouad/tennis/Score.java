@@ -10,6 +10,10 @@ public enum Score {
     }
 
     public static String getScoreLabel(int scoreValue) {
-        return Score.values()[scoreValue].scoreValue;
+        try {
+            return Score.values()[scoreValue].scoreValue;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new RuntimeException("Unknown index score");
+        }
     }
 }
