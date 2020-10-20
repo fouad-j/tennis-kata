@@ -1,5 +1,7 @@
 package com.jfouad.tennis;
 
+import com.jfouad.tennis.exceptions.UnknownTennisRuleException;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -28,8 +30,8 @@ public class TennisGame {
     private Player playerTwo;
 
     public TennisGame(String namePlayerOne, String namePlayerTwo) {
-        this.playerOne = new Player(namePlayerOne, 0);
-        this.playerTwo = new Player(namePlayerTwo, 0);
+        this.playerOne = new Player(namePlayerOne);
+        this.playerTwo = new Player(namePlayerTwo);
     }
 
     public String getScore() {
@@ -39,7 +41,7 @@ public class TennisGame {
                 .map(Map.Entry::getValue)
                 .findFirst()
                 .map(renderAppliedRule -> renderAppliedRule.apply(playerOne, playerTwo))
-                .orElseThrow(() -> new TennisRulesException("Unknown tennis rule"));
+                .orElseThrow(() -> new UnknownTennisRuleException("Unknown tennis rule"));
     }
 
     public void playerOneScores() {
